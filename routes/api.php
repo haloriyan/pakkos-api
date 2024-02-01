@@ -1,0 +1,62 @@
+<?php
+
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Route;
+
+Route::group(['prefix' => "admin"], function () {
+    Route::post('store', "AdminController@store");
+    Route::post('delete', "AdminController@delete");
+    Route::post('update', "AdminController@update");
+    Route::post('login', "AdminController@login");
+
+    Route::get('/', "AdminController@admin");
+});
+
+Route::group(['prefix' => "facility"], function () {
+    Route::post('create', "FacilityController@create");
+    Route::post('delete', "FacilityController@delete");
+    Route::get('/', "FacilityController@get");
+});
+
+Route::group(['prefix' => "template"], function () {
+    Route::post('create', "TemplateController@create");
+    Route::post('delete', "TemplateController@delete");
+    Route::get('/', "TemplateController@get");
+});
+
+Route::group(['prefix' => "user"], function () {
+    Route::post('google-profile', "UserController@googleProfile");
+    Route::post('request-to-be-host', "UserController@requestToBeHost");
+    Route::post('login', "UserController@login");
+    Route::post('auth', "UserController@auth");
+
+    Route::post('action/{name}', "AdminController@userAction");
+
+    Route::get('/', "AdminController@user");
+});
+
+Route::group(['prefix' => "listing"], function () {
+    Route::post('create', "ListingController@create");
+    Route::post('delete', "ListingController@delete");
+    Route::post('approval', "ListingController@approval");
+    Route::post('{id}/update', "ListingController@update");
+    Route::get('{id}', "ListingController@getByID");
+    Route::get('/', "ListingController@get");
+});
+
+Route::group(['prefix' => "page"], function () {
+    Route::group(['prefix' => "admin"], function () {
+        Route::get('dashboard', "AdminController@dashboard");
+    });
+    Route::get('home', "PageController@home");
+});
+
+Route::group(['prefix' => "reservation"], function () {
+    Route::post('submit', "UserController@makeReservation");
+});
+
+Route::group(['prefix' => "rajaongkir"], function () {
+    Route::post('province', "RajaongkirController@province");
+    Route::post('city/{provinceID}', "RajaongkirController@city");
+    Route::post('district/{provinceID}/{cityID}', "RajaongkirController@district");
+});
