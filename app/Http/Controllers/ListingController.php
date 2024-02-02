@@ -39,8 +39,11 @@ class ListingController extends Controller
             ->get();
         }
 
-        foreach ($listings as $l => $listing) {
-            $listings[$l]->facilities_display = $this->getFacilities($listing);
+        if ($listings->count() > 0) {
+            Log::info($listings);
+            foreach ($listings as $l => $listing) {
+                $listings[$l]->facilities_display = $this->getFacilities($listing);
+            }
         }
 
         return response()->json([
@@ -53,7 +56,9 @@ class ListingController extends Controller
             $listing = Listing::where('slug', $id)->with(['facilities'])->first();
         }
 
-        $listing->facilities_display = $this->getFacilities($listing);
+        if ($listing != null) {
+            $listing->facilities_display = $this->getFacilities($listing);
+        }
         
         return response()->json([
             'listing' => $listing,
