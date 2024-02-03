@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Reservation;
+use App\Models\ReservationForm;
+use App\Models\Template;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -56,6 +59,31 @@ class UserController extends Controller
     }
 
     public function makeReservation(Request $request) {
-        // 
+        $record = $request->record;
+
+        $reservation = Reservation::create([
+            'user_id' => $request->user_id,
+            'listing_id' => $request->listing_id,
+        ]);
+
+        foreach ($record as $type => $body) {
+            $query = Template::where([
+                ['type', $type],
+                ['body', $body]
+            ]);
+            $temp = $query->first();
+            
+            $saveRecord = ReservationForm::create([
+                'reservation_id' => $reservation->id,
+                'template_id' => $temp->id,
+                'answer' => "kosong"
+            ]);
+
+            $query->increment('count');
+        }
+
+        return response()->json([
+            'message' => 'ok'
+        ]);
     }
 }

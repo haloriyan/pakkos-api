@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Str;
 use App\Models\Admin;
 use App\Models\Listing;
+use App\Models\Reservation;
+use App\Models\Template;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -42,10 +44,25 @@ class AdminController extends Controller
     public function dashboard() {
         $user_count = User::all(['id'])->count();
         $listing_count = Listing::all(['id'])->count();
+        $reservation_count = Reservation::all(['id'])->count();
+
+        $templatesRaw = Template::orderBy('type', 'DESC')->get();
+        $templates = [];
+
+        foreach ($templatesRaw as $temp) {
+            $templates[$temp->type][] = $temp;
+        }
+
+        $listings = Listing::orderBy('created_at', 'DESC')->with(['user'])->take(5)->get();
+        $users = User::orderBy('created_at', 'DESC')->take(5)->get();
 
         return response()->json([
             'user_count' => $user_count,
             'listing_count' => $listing_count,
+            'reservation_count' => $reservation_count,
+            'templates' => $templates,
+            'listings' => $listings,
+            'users' => $users,
         ]);
     }
     public function user(Request $request) {
@@ -53,7 +70,7 @@ class AdminController extends Controller
         if ($request->q != "") {
             array_push($filter, ['name', 'LIKE', '%'.$request->q.'%']);
         }
-        $users = User::where($filter)->paginate(25);
+        $users = User::where($filter)->paginate(1);
 
         return response()->json([
             'users' => $users,
@@ -70,6 +87,13 @@ class AdminController extends Controller
         }
 
         return response()->json(['message' => "ok"]);
+    }
+    public function reservation() {
+        $reservations = Reservation::orderBy('created_at', 'DESC')->with(['listing', 'user', 'forms.template'])->paginate(25);
+
+        return response()->json([
+            'reservations' => $reservations,
+        ]);
     }
 
     public function admin() {

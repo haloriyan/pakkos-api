@@ -22,6 +22,9 @@ class Listing extends Model
         // return $this->hasMany(ListingFacility::class, 'listing_id');
         return $this->belongsToMany(Facility::class, 'listing_facilities', 'listing_id', 'facility_id');
     }
+    public function facilities_raw() {
+        return $this->hasMany(ListingFacility::class, 'listing_id');
+    }
     public function user() {
         return $this->belongsTo(User::class, 'user_id');
     }

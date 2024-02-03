@@ -15,6 +15,9 @@ Route::group(['prefix' => "admin"], function () {
 Route::group(['prefix' => "facility"], function () {
     Route::post('create', "FacilityController@create");
     Route::post('delete', "FacilityController@delete");
+    Route::post('featured', "FacilityController@featured");
+
+    Route::get('featured', "FacilityController@getFeatured");
     Route::get('/', "FacilityController@get");
 });
 
@@ -53,6 +56,7 @@ Route::group(['prefix' => "page"], function () {
 
 Route::group(['prefix' => "reservation"], function () {
     Route::post('submit', "UserController@makeReservation");
+    Route::get('/', "AdminController@reservation");
 });
 
 Route::group(['prefix' => "rajaongkir"], function () {

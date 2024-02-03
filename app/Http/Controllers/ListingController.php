@@ -34,13 +34,16 @@ class ListingController extends Controller
         if ($userID != null) {
             $listings = Listing::where('user_id', $userID)->with(['facilities'])->get();
         } else {
-            $listings = Listing::orderBy('created_at', 'DESC')
+            $filter = [];
+            if ($request->q != "null") {
+                array_push($filter, ['name', 'LIKE', '%'.$request->q.'%']);
+            }
+            $listings = Listing::where($filter)->orderBy('created_at', 'DESC')
             ->with(['user', 'facilities'])
-            ->get();
+            ->paginate(25);
         }
 
         if ($listings->count() > 0) {
-            Log::info($listings);
             foreach ($listings as $l => $listing) {
                 $listings[$l]->facilities_display = $this->getFacilities($listing);
             }
@@ -87,7 +90,7 @@ class ListingController extends Controller
         foreach (self::$photoKeys as $photo) {
             if ($request->hasFile($photo)) {
                 $ph = $request->file($photo);
-                $phName = $ph->getClientOriginalName();
+                $phName = rand(11111111, 99999999)."_".$ph->getClientOriginalName();
                 $toCreate[$photo] = $phName;
                 $ph->storeAs('public/listing_photos', $phName);
             }

@@ -9,6 +9,13 @@ use Illuminate\Support\Facades\Storage;
 
 class FacilityController extends Controller
 {
+    public function getFeatured() {
+        $facilities = Facility::where('is_featured', true)->get();
+
+        return response()->json([
+            'facilities' => $facilities,
+        ]);
+    }
     public function get() {
         $facilitiesRaw = Facility::orderBy('type', 'ASC')->get();
         $facilities = [];
@@ -34,6 +41,7 @@ class FacilityController extends Controller
             'name' => $request->name,
             'type' => $request->type,
             'icon' => $iconFileName,
+            'is_featured' => false,
         ]);
 
         $icon->storeAs('public/facility_icons', $iconFileName);
@@ -50,6 +58,18 @@ class FacilityController extends Controller
         if ($facility->icon != null) {
             Storage::delete('public/facility_icons/' . $facility->icon);
         }
+
+        return response()->json([
+            'message' => "ok"
+        ]);
+    }
+    public function featured(Request $request) {
+        $data = Facility::where('id', $request->facility_id);
+        $facility = $data->first();
+
+        $data->update([
+            'is_featured' => !$facility->is_featured,
+        ]);
 
         return response()->json([
             'message' => "ok"
