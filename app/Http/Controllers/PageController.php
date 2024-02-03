@@ -14,7 +14,6 @@ class PageController extends Controller
         $facilities = explode(",", base64_decode($request->facilities));
         $query = Listing::where('is_approved', true);
         if ($q != "null") {
-            Log::info($q);
             $query = $query->where('name', 'LIKE', '%'.$q.'%')
             ->orWhere('subdistrict', 'LIKE', '%'.$q.'%')
             ->orWhere('city', 'LIKE', '%'.$q.'%')

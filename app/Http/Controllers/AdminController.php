@@ -70,7 +70,7 @@ class AdminController extends Controller
         if ($request->q != "") {
             array_push($filter, ['name', 'LIKE', '%'.$request->q.'%']);
         }
-        $users = User::where($filter)->paginate(1);
+        $users = User::where($filter)->paginate(25);
 
         return response()->json([
             'users' => $users,
