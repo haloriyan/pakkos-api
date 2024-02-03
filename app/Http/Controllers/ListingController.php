@@ -111,13 +111,29 @@ class ListingController extends Controller
         ]);
     }
     public function delete(Request $request) {
-        $data = Listing::where('id', $request->listing_id);
-        $listing = $data->first();
+        $ids = explode(",", $request->listing_id);
+        $data = Listing::where('id', $ids[0]);
 
-        $deleteData = $data->delete();
-        foreach (self::$photoKeys as $key) {
-            Storage::delete('public/listing_photos/' . $listing->{$key});
+        if (count($ids) > 1) {
+            foreach ($ids as $id) {
+                $data = $data->orWhere('id', $id);
+            }
+            $listings = $data->get();
+
+            foreach ($listings as $listing) {
+                foreach (self::$photoKeys as $key) {
+                    Storage::delete('public/listing_photos/' . $listing->{$key});
+                }
+            }
+        } else {
+            $listing = $data->first();
+
+            foreach (self::$photoKeys as $key) {
+                Storage::delete('public/listing_photos/' . $listing->{$key});
+            }
         }
+
+        $data->delete();
 
         return response()->json([
             'message' => "ok"
