@@ -30,9 +30,9 @@ class ListingController extends Controller
         return $facilities;
     }
     public function get(Request $request) {
-        $userID = $request->header("user_id");
+        $userID = $request->header("UserID");
         if ($userID != null) {
-            $listings = Listing::where('user_id', $userID)->with(['facilities'])->get();
+            $listings = Listing::where('user_id', $userID)->orderBy('created_at', 'DESC')->with(['facilities'])->get();
         } else {
             $filter = [];
             if ($request->q != "null") {
@@ -40,6 +40,7 @@ class ListingController extends Controller
             }
             $listings = Listing::where($filter)->orderBy('created_at', 'DESC')
             ->with(['user', 'facilities'])
+            ->orderBy('created_at', 'DESC')
             ->paginate(25);
         }
 
@@ -68,6 +69,11 @@ class ListingController extends Controller
         ]);
     }
     public function create(Request $request) {
+        $priceInclusion = json_encode($request->price_inclusion);
+        $priceInclusion = str_replace('"', '', $priceInclusion);
+
+        Log::info($priceInclusion);
+
         $toCreate = [
             'user_id' => $request->user_id,
             'name' => $request->name,
@@ -75,7 +81,7 @@ class ListingController extends Controller
             'slug' => $request->slug,
             'consumer_name' => $request->consumer_name,
             'price' => $request->price,
-            'price_inclusion' => json_encode($request->price_inclusion),
+            'price_inclusion' => $priceInclusion,
             'province' => $request->province,
             'city' => $request->city,
             'subdistrict' => $request->subdistrict,
