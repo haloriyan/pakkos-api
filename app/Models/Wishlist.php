@@ -5,11 +5,15 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Facility extends Model
+class Wishlist extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'icon', 'name', 'type', 'is_featured'
+        'user_id', 'listing_id'
     ];
+
+    public function listing() {
+        return $this->belongsTo(Listing::class, 'listing_id');
+    }
 }

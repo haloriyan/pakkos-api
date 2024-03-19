@@ -38,6 +38,9 @@ class ListingController extends Controller
             if ($request->q != "null") {
                 array_push($filter, ['name', 'LIKE', '%'.$request->q.'%']);
             }
+            if ($request->city != "null") {
+                array_push($filter, ['city', 'LIKE', '%'.$request->city.'%']);
+            }
             $listings = Listing::where($filter)->orderBy('created_at', 'DESC')
             ->with(['user', 'facilities'])
             ->orderBy('created_at', 'DESC')
@@ -72,8 +75,6 @@ class ListingController extends Controller
         $priceInclusion = json_encode($request->price_inclusion);
         $priceInclusion = str_replace('"', '', $priceInclusion);
 
-        Log::info($priceInclusion);
-
         $toCreate = [
             'user_id' => $request->user_id,
             'name' => $request->name,
@@ -98,7 +99,7 @@ class ListingController extends Controller
                 $ph = $request->file($photo);
                 $phName = rand(11111111, 99999999)."_".$ph->getClientOriginalName();
                 $toCreate[$photo] = $phName;
-                $ph->storeAs('public/listing_photos', $phName);
+                $ph->storeAs('listing_photos', $phName);
             }
         }
 
@@ -128,14 +129,14 @@ class ListingController extends Controller
 
             foreach ($listings as $listing) {
                 foreach (self::$photoKeys as $key) {
-                    Storage::delete('public/listing_photos/' . $listing->{$key});
+                    Storage::delete('listing_photos/' . $listing->{$key});
                 }
             }
         } else {
             $listing = $data->first();
 
             foreach (self::$photoKeys as $key) {
-                Storage::delete('public/listing_photos/' . $listing->{$key});
+                Storage::delete('listing_photos/' . $listing->{$key});
             }
         }
 
@@ -209,8 +210,8 @@ class ListingController extends Controller
                     $ph = $request->file($photo);
                     $phName = $ph->getClientOriginalName();
                     $toUpdate[$photo] = $phName;
-                    $ph->storeAs('public/listing_photos', $phName);
-                    $deleteOldPhoto = Storage::delete('public/listing_photos/' . $listing->{$photo});
+                    $ph->storeAs('listing_photos', $phName);
+                    $deleteOldPhoto = Storage::delete('listing_photos/' . $listing->{$photo});
                 }
             }
         }
@@ -230,8 +231,8 @@ class ListingController extends Controller
                     $ph = $request->file($photo);
                     $phName = $ph->getClientOriginalName();
                     $toUpdate[$photo] = $phName;
-                    $ph->storeAs('public/listing_photos', $phName);
-                    $deleteOldPhoto = Storage::delete('public/listing_photos/' . $listing->{$photo});
+                    $ph->storeAs('listing_photos', $phName);
+                    $deleteOldPhoto = Storage::delete('listing_photos/' . $listing->{$photo});
                 }
             }
         }

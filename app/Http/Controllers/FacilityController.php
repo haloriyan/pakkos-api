@@ -44,7 +44,7 @@ class FacilityController extends Controller
             'is_featured' => false,
         ]);
 
-        $icon->storeAs('public/facility_icons', $iconFileName);
+        $icon->storeAs('facility_icons', $iconFileName);
 
         return response()->json([
             'message' => "ok"
@@ -56,7 +56,7 @@ class FacilityController extends Controller
 
         $deleteData = $data->delete();
         if ($facility->icon != null) {
-            Storage::delete('public/facility_icons/' . $facility->icon);
+            Storage::delete('facility_icons/' . $facility->icon);
         }
 
         return response()->json([

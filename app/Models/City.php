@@ -5,11 +5,11 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Facility extends Model
+class City extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'icon', 'name', 'type', 'is_featured'
+        'name', 'priority', 'is_default'
     ];
 }

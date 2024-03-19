@@ -12,6 +12,15 @@ Route::group(['prefix' => "admin"], function () {
     Route::get('/', "AdminController@admin");
 });
 
+Route::group(['prefix' => "city"], function () {
+    Route::post('create', "CityController@create");
+    Route::post('delete', "CityController@delete");
+    Route::post('priority', "CityController@priority");
+    Route::post('default', "CityController@default");
+    Route::post('update', "CityController@update");
+    Route::get('{id?}', "CityController@get");
+});
+
 Route::group(['prefix' => "facility"], function () {
     Route::post('create', "FacilityController@create");
     Route::post('delete', "FacilityController@delete");
@@ -32,6 +41,9 @@ Route::group(['prefix' => "user"], function () {
     Route::post('request-to-be-host', "UserController@requestToBeHost");
     Route::post('login', "UserController@login");
     Route::post('auth', "UserController@auth");
+
+    Route::post('wishlist', "WishlistController@get");
+    Route::post('wishlist/put', "WishlistController@put");
 
     Route::post('action/{name}', "AdminController@userAction");
 
