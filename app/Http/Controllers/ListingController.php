@@ -208,7 +208,7 @@ class ListingController extends Controller
             foreach ($photoKeys as $photo) {
                 if ($request->hasFile($photo)) {
                     $ph = $request->file($photo);
-                    $phName = $ph->getClientOriginalName();
+                    $phName = rand(111111, 999999)."_".$ph->getClientOriginalName();
                     $toUpdate[$photo] = $phName;
                     $ph->storeAs('listing_photos', $phName);
                     $deleteOldPhoto = Storage::delete('listing_photos/' . $listing->{$photo});
@@ -229,7 +229,7 @@ class ListingController extends Controller
             foreach ($photoKeys as $photo) {
                 if ($request->hasFile($photo)) {
                     $ph = $request->file($photo);
-                    $phName = $ph->getClientOriginalName();
+                    $phName = rand(111111, 999999)."_".$ph->getClientOriginalName();
                     $toUpdate[$photo] = $phName;
                     $ph->storeAs('listing_photos', $phName);
                     $deleteOldPhoto = Storage::delete('listing_photos/' . $listing->{$photo});
