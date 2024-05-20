@@ -40,7 +40,13 @@ Route::group(['prefix' => "user"], function () {
     Route::post('google-profile', "UserController@googleProfile");
     Route::post('request-to-be-host', "UserController@requestToBeHost");
     Route::post('login', "UserController@login");
+    Route::post('login-email', "UserController@loginEmail");
     Route::post('auth', "UserController@auth");
+    Route::post('register', "UserController@register");
+
+    Route::post('forget-password', "UserController@forgetPassword");
+    Route::get('reset-password/{token}', "UserController@resetPasswordToken");
+    Route::post('reset-password', "UserController@resetPassword");
 
     Route::post('wishlist', "WishlistController@get");
     Route::post('wishlist/put', "WishlistController@put");
