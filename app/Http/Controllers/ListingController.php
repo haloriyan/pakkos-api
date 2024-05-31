@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Listing;
 use App\Models\ListingFacility;
+use App\Models\ListingType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -15,7 +16,7 @@ class ListingController extends Controller
         'front_room_photo', 'inside_room_photo', 'bath_room_photo', 'other_photo'
     ];
 
-    public function getFacilities($listing) {
+    public static function getFacilities($listing) {
         $facilitiesRaw = ListingFacility::where('listing_id', $listing->id)->with(['facility'])->get();
         $facilities = [];
         $types = [];
@@ -49,7 +50,7 @@ class ListingController extends Controller
 
         if ($listings->count() > 0) {
             foreach ($listings as $l => $listing) {
-                $listings[$l]->facilities_display = $this->getFacilities($listing);
+                $listings[$l]->facilities_display = self::getFacilities($listing);
             }
         }
 
@@ -64,7 +65,7 @@ class ListingController extends Controller
         }
 
         if ($listing != null) {
-            $listing->facilities_display = $this->getFacilities($listing);
+            $listing->facilities_display = self::getFacilities($listing);
         }
         
         return response()->json([
@@ -247,6 +248,27 @@ class ListingController extends Controller
         $data = Listing::where('id', $request->listing_id);
         $data->update([
             'is_approved' => $request->action == "accept" ? true : false,
+        ]);
+        
+        return response()->json([
+            'message' => "ok"
+        ]);
+    }
+
+    public function getType($id) {
+        $types = ListingType::where('listing_id', $id)->get();
+
+        return response()->json([
+            'message' => "ok",
+            'types' => $types,
+        ]);
+    }
+    public function storeType($id, Request $request) {
+        $saveData = ListingType::create([
+            'listing_id' => $id,
+            'name' => $request->name,
+            'price_monthly' => $request->price,
+            'max_capacity' => $request->capacity
         ]);
         
         return response()->json([

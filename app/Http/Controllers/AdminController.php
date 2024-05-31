@@ -16,7 +16,6 @@ class AdminController extends Controller
 {
     public function login(Request $request) {
         $message = "Kombinasi email dan password tidak tepat";
-        Log::info($request->email);
         $data = Admin::where('email', $request->email);
         $user = $data->first();
         $status = 401;
@@ -70,7 +69,7 @@ class AdminController extends Controller
         if ($request->q != "") {
             array_push($filter, ['name', 'LIKE', '%'.$request->q.'%']);
         }
-        $users = User::where($filter)->paginate(25);
+        $users = User::where($filter)->orderBy('created_at', 'DESC')->paginate(25);
 
         return response()->json([
             'users' => $users,

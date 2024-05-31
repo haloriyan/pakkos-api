@@ -53,15 +53,28 @@ Route::group(['prefix' => "user"], function () {
 
     Route::post('action/{name}', "AdminController@userAction");
 
+    Route::post('reservation', "ReservationController@mine");
+
     Route::get('/', "AdminController@user");
+});
+
+Route::group(['prefix' => "midtrans"], function () {
+    // 
 });
 
 Route::group(['prefix' => "listing"], function () {
     Route::post('create', "ListingController@create");
     Route::post('delete', "ListingController@delete");
     Route::post('approval', "ListingController@approval");
-    Route::post('{id}/update', "ListingController@update");
-    Route::get('{id}', "ListingController@getByID");
+
+    Route::group(['prefix' => "{id}"], function () {
+        Route::group(['prefix' => "type"], function () {
+            Route::post('store', "ListingController@storeType");
+            Route::get('/', "ListingController@getType");
+        });
+        Route::post('/update', "ListingController@update");
+        Route::get('/', "ListingController@getByID");
+    });
     Route::get('/', "ListingController@get");
 });
 
@@ -74,6 +87,9 @@ Route::group(['prefix' => "page"], function () {
 
 Route::group(['prefix' => "reservation"], function () {
     Route::post('submit', "UserController@makeReservation");
+    Route::post('show-address', "ReservationController@showAddress");
+    Route::post('pay', "ReservationController@pay");
+    Route::post('refresh-payment', "ReservationController@refreshPayment");
     Route::get('/', "AdminController@reservation");
 });
 
